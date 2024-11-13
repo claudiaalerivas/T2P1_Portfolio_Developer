@@ -1,10 +1,12 @@
-import { Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet } from 'react-native'
+import { Redirect } from 'expo-router'
 
-export default function App() {
+const AppPage = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
+    <Redirect href={"/home"}></Redirect>
   )
 }
+
+export default AppPage
+
+const styles = StyleSheet.create({})
