@@ -40,6 +40,10 @@ const HomePage = () => {
                         <Text style={styles.descriptionBox}>Podrás escalar tu proyecto y añadir más funcionalidades siempre que lo necesites.</Text>
                     </View>
                 </View>
+                <Text>Prueba un ejemplo de una Aplicación!</Text>
+                <Link style={styles.link} href="/shopping">
+                    <Text style={styles.buttomText}>Pruebalo!</Text>
+                </Link>
                 <View style={styles.socialBox}>
                     <Ionicons name="logo-github" size={30} style={styles.socialIcons} />
                     <Entypo name="instagram" size={30} style={styles.socialIcons} />
