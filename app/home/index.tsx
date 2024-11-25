@@ -40,7 +40,7 @@ const HomePage = () => {
                         <Text style={styles.descriptionBox}>Podrás escalar tu proyecto y añadir más funcionalidades siempre que lo necesites.</Text>
                     </View>
                 </View>
-                <Text>Prueba un ejemplo de una Aplicación!</Text>
+                <Text style={styles.titleTestApp}>Prueba un ejemplo de una Aplicación</Text>
                 <Link style={styles.link} href="/shopping">
                     <Text style={styles.buttomText}>Pruebalo!</Text>
                 </Link>
@@ -58,6 +58,12 @@ const HomePage = () => {
 export default HomePage
 
 const styles = StyleSheet.create({
+    titleTestApp : {
+        marginTop: 15,
+        alignSelf: 'center',
+        fontSize: 25,
+        textAlign: 'center'
+    },
     link: {
         backgroundColor: 'purple',
         width: 90,
