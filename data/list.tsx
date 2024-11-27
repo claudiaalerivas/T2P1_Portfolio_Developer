@@ -1,4 +1,4 @@
-import { info } from "../types/type"
+import { info } from "../types/type";
 
 export const initialForm: info[] = [
     {
