@@ -5,11 +5,17 @@ import { initialCartItemList } from '../../data/card-item-list'
 import uuid from 'react-native-uuid';
 import { CartItem } from '../../types/CartItem'
 import { Picker } from '@react-native-picker/picker';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Foundation from '@expo/vector-icons/Foundation';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 
 export default function ShoppingCartPage() {
 
   const [category, setCategory] = useState<string>('');
   const [displayModal, setDisplayModal] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [cartList, setCartList] = useState<CartItem[]>(initialCartItemList);
 
   const [cartItem, setCartItem] = useState<CartItem>({
     id: '',
@@ -20,8 +26,6 @@ export default function ShoppingCartPage() {
     obtained: false
   });
 
-  const [total, setTotal] = useState(0);
-  const [cartList, setCartList] = useState<CartItem[]>(initialCartItemList);
 
   const categories: string[] = [
     'Panadería',
@@ -42,22 +46,6 @@ export default function ShoppingCartPage() {
     vegetables: require('../../assets/images/fruitsVegetables.png'),
     others: require('../../assets/images/others.png')
   }
-
-  const isObtain = (index: number) => {
-    const listForm = [...cartList];
-    listForm[index].obtained = !listForm[index].obtained;
-    recalculateTotal(listForm);
-  };
-
-  const recalculateTotal = (updatedList: typeof cartList) => {
-    let newTotal = 0;
-    for (let i = 0; i < updatedList.length; i++) {
-      if (updatedList[i].obtained) {
-        newTotal += updatedList[i].price * updatedList[i].quantity;
-      }
-    }
-    setTotal(newTotal);
-  };
 
   const getImageFromCategory = (selectedCategory: string) => {
     switch (selectedCategory) {
@@ -93,18 +81,58 @@ export default function ShoppingCartPage() {
     })
     setDisplayModal(false);
   };
+  const isObtain = (index: number) => {
+    const listForm = [...cartList];
+    listForm[index].obtained = !listForm[index].obtained;
+    recalculateTotal(listForm);
+  };
 
+  const recalculateTotal = (updatedList: typeof cartList, idDelete?: string) => {
+    let newTotal = 0;
+    if (updatedList.length == 0) {
+      setTotal(0)
+    } else {
+      for (let i = 0; i < updatedList.length; i++) {
+        if (updatedList[i].obtained) {
+          newTotal += updatedList[i].price * updatedList[i].quantity;
+        }
+        if (updatedList[i].id == idDelete && updatedList[i].obtained && updatedList.length > 0) {
+          newTotal -= updatedList[i].price * updatedList[i].quantity;
+        }
+      }
+    }
+    if (newTotal < 0) {
+      setTotal(0)
+    } else {
+      setTotal(newTotal);
+    }
+  };
+  const deleteList = () => {
+    setCartList([])
+    setTotal(0)
+  };
   const deleteItem = (id: string) => {
+    recalculateTotal(cartList, id)
     const newList = cartList.filter((item) => item.id !== id);
     setCartList(newList);
   };
 
   return (
     <View>
-      <Image style={styles.imagePrincipal} source={require('../../assets/images/shoppingCart.png')} />
-      <Text style={styles.title}>Carrito de Compras</Text>
-      <Text style={styles.price}>Precio de la lista: {total}€</Text>
-      <Text style={styles.listTitle}>Lista de la compra</Text>
+      <View style={styles.row}>
+        <Image style={styles.imagePrincipal} source={require('../../assets/images/shoppingCart.png')} />
+        <View>
+          <Text style={styles.title}>Carrito de Compras</Text>
+          <Text style={styles.price}>Total: {total}€</Text>
+          <Button
+          onPress={deleteList}
+          title="Eliminar todo"
+          disabled={cartList.length == 0}
+          color={'red'}
+        />
+
+        </View>
+      </View>
       {cartList.length === 0 ?
         (
           <Text style={styles.empty}>Lista de la compra vacia, Intente de nuevo</Text>
@@ -115,17 +143,22 @@ export default function ShoppingCartPage() {
               data={cartList}
               renderItem={({ item, index }) => (
                 <View style={styles.list}>
-                  <Pressable onPress={() => isObtain(index)}>
-                    <Text style={styles.shop}>{item.obtained ? 'Obtenido ✅' : 'Meter al Carrito de Compras'}</Text>
-                  </Pressable>
-                  <Image style={styles.imagesCategorys} source={item.image} />
-                  <Text>Nombre Producto: {item.name}</Text>
-                  <Text>Cantidad: {item.quantity}</Text>
-                  <Text>Categoria: {item.category}</Text>
-                  <Text>Precio: {item.price}</Text>
-                  <Pressable onPress={() => deleteItem(item.id)}>
-                    <Text style={styles.buttomDelete}>Borrar</Text>
-                  </Pressable>
+                  <View>
+                    <Image style={styles.imagesCategorys} source={item.image} />
+
+                    <Pressable onPress={() => isObtain(index)}>
+                      <Text style={styles.shop}>{item.obtained ? 'Obtenido ✅' : 'Pedir '}</Text>
+                    </Pressable>
+                  </View>
+                  <View style={styles.infoProducts}>
+                    <Text>Nombre Producto: {item.name}</Text>
+                    <Text>Cantidad: {item.quantity}</Text>
+                    <Text>Categoria: {item.category}</Text>
+                    <Text>Precio: {item.price}</Text>
+                    <Pressable onPress={() => deleteItem(item.id)}>
+                      <MaterialCommunityIcons style={styles.buttomDelete} name="delete-circle" size={50} color="black" />
+                    </Pressable>
+                  </View>
                 </View>
               )}
             />
@@ -154,7 +187,7 @@ export default function ShoppingCartPage() {
               }
               }>
               {categories.map((item, index) => <Picker.Item label={item} value={item} key={index} />)}
-              
+
             </Picker>
             <Text>Cantidad:</Text>
             <TextInput
@@ -175,7 +208,7 @@ export default function ShoppingCartPage() {
             />
 
             <View style={styles.buttomsModal}>
-              <Button title="Guardar" onPress={() => sendForm()} disabled={cartItem.name == '' || category == '' || cartItem.quantity <= 0 || cartItem.price <= 0} />
+              <Button title="Guardar" onPress={() => sendForm()} disabled={cartItem.name == '' || category == '' || cartItem.quantity <= 0 || isNaN(cartItem.quantity) || isNaN(cartItem.price) || cartItem.price <= 0} />
               <Pressable onPress={() => setDisplayModal(false)}>
                 <Text style={styles.buttomClose}>Cerrar</Text>
               </Pressable>
@@ -184,25 +217,41 @@ export default function ShoppingCartPage() {
         </View>
       </Modal >
 
-      <Button
-        onPress={() => setDisplayModal(true)}
-        title="+ Añadir Nuevo Producto"
-        color="#841584"
-      />
-      <Link style={styles.link} href="/">
-        <Text style={styles.buttomText}>Inicio</Text>
-      </Link>
-      <Button
-        onPress={() => setCartList([])}
-        title="Eliminar la Lista"
-        disabled={cartList.length == 0}
-      />
+      <View style={styles.bottoms}>
+        <Pressable onPress={() => setDisplayModal(true)}>
+          <MaterialCommunityIcons style={styles.addCart} name="cart-plus" size={40} />
+        </Pressable>
+        <Link style={styles.link} href="/">
+          <Foundation name="home" size={24} style={styles.buttomText} />
+        </Link>
+        
+      </View>
     </View >
   );
 }
 
 
 const styles = StyleSheet.create({
+
+  addCart: {
+    alignItems: 'center',
+    marginTop: 10,
+    color: "#17a325"
+  },
+  row: {
+    flexDirection: 'row',
+    marginLeft: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  bottoms: {
+    flexDirection: 'row',
+    alignSelf:'center',
+    marginTop: 20
+  },
+  infoProducts: {
+    marginTop: 20
+  },
   buttomsModal: {
     flexDirection: 'row',
   },
@@ -219,16 +268,8 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   buttomDelete: {
-    color: 'white',
-    paddingTop: 8,
-    paddingBottom: 4,
-    fontSize: 19,
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderRadius: 50,
-    alignSelf: 'center',
-    backgroundColor: 'red',
-    marginTop: 15
+    color: 'red',
+    marginRight: 10,
   },
   modalOverlay: {
     flex: 1,
@@ -262,7 +303,6 @@ const styles = StyleSheet.create({
   },
   shop: {
     alignSelf: 'center',
-    color: 'red',
     marginTop: 10
   },
   modal: {
@@ -271,15 +311,15 @@ const styles = StyleSheet.create({
   listShopping: {
     alignSelf: 'center',
     fontSize: 30,
-    marginTop: 20,
-    marginBottom: 20,
-    height: '45%'
+    height: '70%',
+    width: 400,
+    backgroundColor:'#f5f5f5'
   },
   title: {
     alignSelf: 'center',
     fontSize: 30,
     marginTop: 20,
-    marginBottom: 20
+    marginLeft: 18
   },
   imagePrincipal: {
     alignSelf: 'center',
@@ -292,11 +332,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
+    marginRight: 30
   },
   price: {
     fontSize: 20,
-    marginBottom: 20,
     marginLeft: 20
   },
   empty: {
@@ -306,12 +346,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 50
   },
-  listTitle: {
-    fontSize: 20,
-    marginBottom: 5,
-    marginLeft: 20,
-    color: 'purple'
-  },
   list: {
     backgroundColor: '#E7E0EC',
     marginBottom: 10,
@@ -319,19 +353,19 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 30,
-    width: '100%'
+    width: '100%',
+    flexDirection: 'row',
+
   },
 
   link: {
-    backgroundColor: 'purple',
-    width: 90,
-    borderRadius: 50,
-    paddingTop: 10,
-    paddingBottom: 10,
+    color: 'purple',
+    width: 50,
+    paddingBottom: 12,
     alignSelf: 'center',
+    marginLeft: 50
   },
   buttomText: {
-    color: 'white',
-    textAlign: 'center'
+    fontSize: 50
   },
 })

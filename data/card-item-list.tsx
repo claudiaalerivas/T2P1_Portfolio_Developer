@@ -17,6 +17,6 @@ export const initialCartItemList: CartItem[] = [
       image: require('../assets/images/meat.png'),
       category: 'Bebidas',
       price: 1.5,
-      obtained: true,
+      obtained: false,
     }, 
   ]
