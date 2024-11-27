@@ -1,6 +1,6 @@
-import { info } from "../types/type";
+import { CartItem } from "../types/CartItem";
 
-export const initialForm: info[] = [
+export const initialCartItemList: CartItem[] = [
     {
       name: 'Leche',
       cantidad: 2,

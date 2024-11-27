@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button, StyleSheet, Text, View, Modal, TextInput, FlatList, Image, Pressable } from 'react-native'
 import { Link } from 'expo-router'
 import DropDownPicker from 'react-native-dropdown-picker'
-import { initialForm } from '../../data/list'
+import { initialCartItemList } from '../../data/card-item-list'
 
 
 export default function ShoppingCartPage() {
@@ -31,7 +31,7 @@ export default function ShoppingCartPage() {
   
 
   const [total, setTotal] = useState(0);
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(initialCartItemList);
 
   const [items, setItems] = useState([
     { label: 'Panadería', value: 'Panadería' },
