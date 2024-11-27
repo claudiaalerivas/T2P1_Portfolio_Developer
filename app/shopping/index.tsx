@@ -10,6 +10,8 @@ export default function ShoppingCartPage() {
 
   const [category, setCategory] = useState<string>('');
   const [displayModal, setDisplayModal] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [cartList, setCartList] = useState<CartItem[]>(initialCartItemList);
 
   const [cartItem, setCartItem] = useState<CartItem>({
     id: '',
@@ -20,8 +22,6 @@ export default function ShoppingCartPage() {
     obtained: false
   });
 
-  const [total, setTotal] = useState(0);
-  const [cartList, setCartList] = useState<CartItem[]>(initialCartItemList);
 
   const categories: string[] = [
     'Panadería',
@@ -42,22 +42,6 @@ export default function ShoppingCartPage() {
     vegetables: require('../../assets/images/fruitsVegetables.png'),
     others: require('../../assets/images/others.png')
   }
-
-  const isObtain = (index: number) => {
-    const listForm = [...cartList];
-    listForm[index].obtained = !listForm[index].obtained;
-    recalculateTotal(listForm);
-  };
-
-  const recalculateTotal = (updatedList: typeof cartList) => {
-    let newTotal = 0;
-    for (let i = 0; i < updatedList.length; i++) {
-      if (updatedList[i].obtained) {
-        newTotal += updatedList[i].price * updatedList[i].quantity;
-      }
-    }
-    setTotal(newTotal);
-  };
 
   const getImageFromCategory = (selectedCategory: string) => {
     switch (selectedCategory) {
@@ -93,9 +77,39 @@ export default function ShoppingCartPage() {
     })
     setDisplayModal(false);
   };
+  const isObtain = (index: number) => {
+    const listForm = [...cartList];
+    listForm[index].obtained = !listForm[index].obtained;
+    recalculateTotal(listForm);
+  };
 
-  const deleteItem = (name: string) => {
-    const newList = cartList.filter((item) => item.name !== name);
+  const recalculateTotal = (updatedList: typeof cartList, idDelete?: string) => {
+    let newTotal = 0;
+    if (updatedList.length == 0) {
+      setTotal(0)
+    } else {
+      for (let i = 0; i < updatedList.length; i++) {
+        if (updatedList[i].obtained) {
+          newTotal += updatedList[i].price * updatedList[i].quantity;
+        }
+        if (updatedList[i].id == idDelete && updatedList[i].obtained && updatedList.length > 0) {
+          newTotal -= updatedList[i].price * updatedList[i].quantity;
+        }
+      }
+    }
+    if (newTotal < 0) {
+      setTotal(0)
+    } else {
+      setTotal(newTotal);
+    }
+  };
+  const deleteList = () => {
+    setCartList([])
+    setTotal(0)
+  };
+  const deleteItem = (id: string) => {
+    recalculateTotal(cartList, id)
+    const newList = cartList.filter((item) => item.id !== id);
     setCartList(newList);
   };
 
@@ -123,7 +137,7 @@ export default function ShoppingCartPage() {
                   <Text>Cantidad: {item.quantity}</Text>
                   <Text>Categoria: {item.category}</Text>
                   <Text>Precio: {item.price}</Text>
-                  <Pressable onPress={() => deleteItem(item.name)}>
+                  <Pressable onPress={() => deleteItem(item.id)}>
                     <Text style={styles.buttomDelete}>Borrar</Text>
                   </Pressable>
                 </View>
@@ -154,7 +168,7 @@ export default function ShoppingCartPage() {
               }
               }>
               {categories.map((item, index) => <Picker.Item label={item} value={item} key={index} />)}
-              
+
             </Picker>
             <Text>Cantidad:</Text>
             <TextInput
@@ -175,7 +189,7 @@ export default function ShoppingCartPage() {
             />
 
             <View style={styles.buttomsModal}>
-              <Button title="Guardar" onPress={() => sendForm()} disabled={cartItem.name == '' || category == '' || cartItem.quantity <= 0 || cartItem.price <= 0} />
+              <Button title="Guardar" onPress={() => sendForm()} disabled={cartItem.name == '' || category == '' || cartItem.quantity <= 0 || isNaN(cartItem.quantity) || isNaN(cartItem.price) || cartItem.price <= 0} />
               <Pressable onPress={() => setDisplayModal(false)}>
                 <Text style={styles.buttomClose}>Cerrar</Text>
               </Pressable>
@@ -193,7 +207,7 @@ export default function ShoppingCartPage() {
         <Text style={styles.buttomText}>Inicio</Text>
       </Link>
       <Button
-        onPress={() => setCartList([])}
+        onPress={deleteList}
         title="Eliminar la Lista"
         disabled={cartList.length == 0}
       />
