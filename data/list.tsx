@@ -1,26 +1,20 @@
-import { info } from "../types/Type";
+import { info } from "../types/type"
 
-export const list: info[] = [
+export const initialForm: info[] = [
     {
-        name:  "Pescado",
-        cantidad: 1,
-        image: require('../assets/images/fished.png'),
-        category: "Pescados",
-        price: 2,
-    },
+      name: 'Leche',
+      cantidad: 2,
+      image: require('../assets/images/drinks.png'),
+      category: 'Bebidas',
+      price: 1.5,
+      obtained: false,
+    }, 
     {
-        name: "Manzana",
-        cantidad: 1,
-        image: require('../assets/images/fruitsVegetables.png'),
-        category: "Verdura",
-        price: 2,
-    },
-    {
-        name: "Pancito Fránces",
-        cantidad: 2,
-        image: require('../assets/images/pan.png'),
-        category: "Panaderia",
-        price: 2,
-    },
-    
-]
+      name: 'Solomillo',
+      cantidad: 2,
+      image: require('../assets/images/meat.png'),
+      category: 'Bebidas',
+      price: 1.5,
+      obtained: true,
+    }, 
+  ]
