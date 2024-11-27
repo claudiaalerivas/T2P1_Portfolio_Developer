@@ -1,96 +1,102 @@
-import { useState } from 'react'
+import { Dispatch, useState } from 'react'
 import { Button, StyleSheet, Text, View, Modal, TextInput, FlatList, Image, Pressable } from 'react-native'
 import { Link } from 'expo-router'
-import DropDownPicker from 'react-native-dropdown-picker'
 import { initialCartItemList } from '../../data/card-item-list'
-
+import uuid from 'react-native-uuid';
+import { CartItem } from '../../types/CartItem'
+import { Picker } from '@react-native-picker/picker';
 
 export default function ShoppingCartPage() {
-  const [name, setName] = useState('');
-  const [cantidad, setCantidad] = useState(0);
-  const [price, setPrice] = useState(0);
-  const [category, setCategory] = useState('');
-  const [open, setOpen] = useState(false);
-  const [shop, setShop] = useState(false);
+
+  const [category, setCategory] = useState<string>('');
+  const [displayModal, setDisplayModal] = useState(false);
+
+  const [cartItem, setCartItem] = useState<CartItem>({
+    id: '',
+    name: '',
+    quantity: 0,
+    category: '',
+    price: 0,
+    obtained: false
+  });
+
+  const [total, setTotal] = useState(0);
+  const [cartList, setCartList] = useState<CartItem[]>(initialCartItemList);
+
+  const categories: string[] = [
+    'Panadería',
+    'Bebidas',
+    'Enlatados',
+    'Carnes',
+    'Pescados',
+    'Frutas/Verduras',
+    'Otros',
+  ];
+
+  const images = {
+    bread: require('../../assets/images/pan.png'),
+    canned: require('../../assets/images/canned.png'),
+    drinks: require('../../assets/images/drinks.png'),
+    meat: require('../../assets/images/meat.png'),
+    fish: require('../../assets/images/fished.png'),
+    vegetables: require('../../assets/images/fruitsVegetables.png'),
+    others: require('../../assets/images/others.png')
+  }
 
   const isObtain = (index: number) => {
-    const listForm = [...form];
+    const listForm = [...cartList];
     listForm[index].obtained = !listForm[index].obtained;
     recalculateTotal(listForm);
   };
-  const recalculateTotal = (updatedList: typeof form) => {
+
+  const recalculateTotal = (updatedList: typeof cartList) => {
     let newTotal = 0;
     for (let i = 0; i < updatedList.length; i++) {
       if (updatedList[i].obtained) {
-        newTotal += updatedList[i].price * updatedList[i].cantidad;
+        newTotal += updatedList[i].price * updatedList[i].quantity;
       }
     }
     setTotal(newTotal);
   };
 
-  
-
-  const [total, setTotal] = useState(0);
-  const [form, setForm] = useState(initialCartItemList);
-
-  const [items, setItems] = useState([
-    { label: 'Panadería', value: 'Panadería' },
-    { label: 'Bebidas', value: 'Bebidas' },
-    { label: 'Enlatados', value: 'Enlatados' },
-    { label: 'Carnes', value: 'Carnes' },
-    { label: 'Pescados', value: 'Pescados' },
-    { label: 'Frutas/Verduras', value: 'Frutas/Verduras' },
-    { label: 'Otros', value: 'Otros' },
-  ]);
-
-  const handleCategoryChange = (value: string) => {
-    setCategory(value);
-  };
+  const getImageFromCategory = (selectedCategory: string) => {
+    switch (selectedCategory) {
+      case 'Panadería':
+        return images.bread
+      case 'Bebidas':
+        return images.canned
+      case 'Enlatados':
+        return images.drinks
+      case 'Carnes':
+        return images.meat
+      case 'Pescados':
+        return images.fish
+      case 'Frutas/Verduras':
+        return images.vegetables
+      case 'Otros':
+        return images.others
+      default:
+        return images.others
+    }
+  }
 
   const sendForm = () => {
-    const imageProduct = (category: string) => {
-      switch (category) {
-        case 'Panadería':
-          return require('../../assets/images/pan.png');
-        case 'Enlatados':
-          return require('../../assets/images/canned.png');
-        case 'Bebidas':
-          return require('../../assets/images/drinks.png');
-        case 'Carnes':
-          return require('../../assets/images/meat.png');
-        case 'Pescados':
-          return require('../../assets/images/fished.png');
-        case 'Frutas/Verduras':
-          return require('../../assets/images/fruitsVegetables.png');
-        default:
-          return require('../../assets/images/others.png');
-      }
-    };
+    setCartList(() => [...cartList, cartItem]);
 
-    const newItem = {
-      name,
-      cantidad,
-      image: imageProduct(category),
-      category,
-      price,
-      obtained: false,
-    };
-
-
-    setForm([...form, newItem]);
-    setShop(false);
-    setName('');
-    setCantidad(0);
-    setPrice(0);
-    setCategory('');
+    setCartItem({
+      id: '',
+      name: '',
+      quantity: 0,
+      category: '',
+      price: 0,
+      obtained: false
+    })
+    setDisplayModal(false);
   };
 
   const deleteItem = (name: string) => {
-    const newList = form.filter((item) => item.name !== name);
-    setForm(newList);
-  };
-  const deleteList = () => {
-    setForm([])
+    const newList = cartList.filter((item) => item.name !== name);
+    setCartList(newList);
   };
 
   return (
@@ -99,13 +105,14 @@ export default function ShoppingCartPage() {
       <Text style={styles.title}>Carrito de Compras</Text>
       <Text style={styles.price}>Precio de la lista: {total}€</Text>
       <Text style={styles.listTitle}>Lista de la compra</Text>
-      {form.length === 0 ?
+      {cartList.length === 0 ?
         (
           <Text style={styles.empty}>Lista de la compra vacia, Intente de nuevo</Text>
         ) : (
           <View style={styles.listShopping}>
             <FlatList
-              data={form}
+              keyExtractor={(item) => item.id}
+              data={cartList}
               renderItem={({ item, index }) => (
                 <View style={styles.list}>
                   <Pressable onPress={() => isObtain(index)}>
@@ -113,7 +120,7 @@ export default function ShoppingCartPage() {
                   </Pressable>
                   <Image style={styles.imagesCategorys} source={item.image} />
                   <Text>Nombre Producto: {item.name}</Text>
-                  <Text>Cantidad: {item.cantidad}</Text>
+                  <Text>Cantidad: {item.quantity}</Text>
                   <Text>Categoria: {item.category}</Text>
                   <Text>Precio: {item.price}</Text>
                   <Pressable onPress={() => deleteItem(item.name)}>
@@ -124,62 +131,61 @@ export default function ShoppingCartPage() {
             />
           </View>
         )}
-      {shop && (
-        <Modal animationType="slide" transparent={true}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Añadir Nuevo Producto a la Lista</Text>
+      <Modal animationType="slide" transparent={true} visible={displayModal}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Añadir Nuevo Producto a la Lista</Text>
 
-              <Text>Nombre:</Text>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Papa bonita"
-              />
+            <Text>Nombre:</Text>
+            <TextInput
+              style={styles.input}
+              value={cartItem.name}
+              onChangeText={(newName) => setCartItem({ ...cartItem, id: uuid.v4(), name: newName })}
+              placeholder="Papa bonita"
+            />
 
-              <Text>Categoría:</Text>
-              <DropDownPicker
-                open={open}
-                value={category}
-                items={items}
-                setOpen={setOpen}
-                setValue={handleCategoryChange}
-                setItems={setItems}
-                placeholder="Selecciona una categoría"
-              />
+            <Text>Categoría:</Text>
+            <Picker
+              placeholder="Selecciona una categoría"
+              selectedValue={category}
+              onValueChange={(selectedCategory) => {
+                setCategory(selectedCategory)
+                setCartItem({ ...cartItem, category: selectedCategory, image: getImageFromCategory(selectedCategory) })
+              }
+              }>
+              {categories.map((item, index) => <Picker.Item label={item} value={item} key={index} />)}
+              
+            </Picker>
+            <Text>Cantidad:</Text>
+            <TextInput
+              style={styles.input}
+              value={cartItem.quantity.toString()}
+              onChangeText={(newQuantity) => setCartItem({ ...cartItem, quantity: parseFloat(newQuantity) })}
+              placeholder="12"
+              keyboardType="numeric"
+            />
 
-              <Text>Cantidad:</Text>
-              <TextInput
-                style={styles.input}
-                value={cantidad.toString()}
-                onChangeText={(value) => setCantidad(Number(value))}
-                placeholder="12"
-                keyboardType="numeric"
-              />
+            <Text>Precio:</Text>
+            <TextInput
+              style={styles.input}
+              value={cartItem.price.toString()}
+              onChangeText={(newQuantity) => setCartItem({ ...cartItem, price: parseFloat(newQuantity) })}
+              placeholder="5.0"
+              keyboardType="numeric"
+            />
 
-              <Text>Precio:</Text>
-              <TextInput
-                style={styles.input}
-                value={price.toString()}
-                onChangeText={(value) => setPrice(Number(value))}
-                placeholder="5.0"
-                keyboardType="numeric"
-              />
-
-              <View style={styles.buttomsModal}>
-                <Button title="Guardar" onPress={sendForm} disabled={name == '' || category == '' || Number(cantidad) <= 0 || Number(price) <= 0} />
-                <Pressable onPress={() => setShop(false)}>
-                  <Text style={styles.buttomClose}>Cerrar</Text>
-                </Pressable>
-              </View>
+            <View style={styles.buttomsModal}>
+              <Button title="Guardar" onPress={() => sendForm()} disabled={cartItem.name == '' || category == '' || cartItem.quantity <= 0 || cartItem.price <= 0} />
+              <Pressable onPress={() => setDisplayModal(false)}>
+                <Text style={styles.buttomClose}>Cerrar</Text>
+              </Pressable>
             </View>
           </View>
-        </Modal>
-      )}
+        </View>
+      </Modal >
 
       <Button
-        onPress={() => setShop(true)}
+        onPress={() => setDisplayModal(true)}
         title="+ Añadir Nuevo Producto"
         color="#841584"
       />
@@ -187,11 +193,11 @@ export default function ShoppingCartPage() {
         <Text style={styles.buttomText}>Inicio</Text>
       </Link>
       <Button
-        onPress={deleteList}
+        onPress={() => setCartList([])}
         title="Eliminar la Lista"
-        disabled={form.length == 0}
+        disabled={cartList.length == 0}
       />
-    </View>
+    </View >
   );
 }
 
