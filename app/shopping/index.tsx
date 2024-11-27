@@ -94,8 +94,8 @@ export default function ShoppingCartPage() {
     setDisplayModal(false);
   };
 
-  const deleteItem = (name: string) => {
-    const newList = cartList.filter((item) => item.name !== name);
+  const deleteItem = (id: string) => {
+    const newList = cartList.filter((item) => item.id !== id);
     setCartList(newList);
   };
 
@@ -123,7 +123,7 @@ export default function ShoppingCartPage() {
                   <Text>Cantidad: {item.quantity}</Text>
                   <Text>Categoria: {item.category}</Text>
                   <Text>Precio: {item.price}</Text>
-                  <Pressable onPress={() => deleteItem(item.name)}>
+                  <Pressable onPress={() => deleteItem(item.id)}>
                     <Text style={styles.buttomDelete}>Borrar</Text>
                   </Pressable>
                 </View>
