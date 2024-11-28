@@ -3,7 +3,7 @@ import { Button, StyleSheet, Text, View, Modal, TextInput, FlatList, Image, Pres
 import { Link } from 'expo-router'
 import { initialCartItemList } from '../../data/card-item-list'
 import uuid from 'react-native-uuid';
-import { CartItem } from '../../types/CartItem'
+import { CartItem as CardItem } from '../../types/CartItem'
 import { Picker } from '@react-native-picker/picker';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Foundation from '@expo/vector-icons/Foundation';
@@ -12,19 +12,20 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function ShoppingCartPage() {
 
-  const [category, setCategory] = useState<string>('');
-  const [displayModal, setDisplayModal] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [cartList, setCartList] = useState<CartItem[]>(initialCartItemList);
-
-  const [cartItem, setCartItem] = useState<CartItem>({
+  const emptyCart = {
     id: '',
     name: '',
     quantity: 0,
     category: '',
     price: 0,
     obtained: false
-  });
+  }
+  const [category, setCategory] = useState<string>('');
+  const [displayModal, setDisplayModal] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [cardList, setCardList] = useState<CardItem[]>(initialCartItemList);
+  const [cardItem, setCardItem] = useState<CardItem>(emptyCart);
+  const [selectProduct, setSelectProduct] = useState(false)
 
 
   const categories: string[] = [
@@ -69,25 +70,19 @@ export default function ShoppingCartPage() {
   }
 
   const sendForm = () => {
-    setCartList(() => [...cartList, cartItem]);
-
-    setCartItem({
-      id: '',
-      name: '',
-      quantity: 0,
-      category: '',
-      price: 0,
-      obtained: false
-    })
+    setCardList(() => [...cardList, cardItem]);
+    setCardItem(emptyCart)
     setDisplayModal(false);
   };
   const isObtain = (index: number) => {
-    const listForm = [...cartList];
+    const listForm = [...cardList];
     listForm[index].obtained = !listForm[index].obtained;
-    recalculateTotal(listForm);
+    recalculateTotal(listForm); 4
+
+    setSelectProduct(!selectProduct)
   };
 
-  const recalculateTotal = (updatedList: typeof cartList, idDelete?: string) => {
+  const recalculateTotal = (updatedList: typeof cardList, idDelete?: string) => {
     let newTotal = 0;
     if (updatedList.length == 0) {
       setTotal(0)
@@ -108,13 +103,22 @@ export default function ShoppingCartPage() {
     }
   };
   const deleteList = () => {
-    setCartList([])
+    setCardList([])
     setTotal(0)
   };
   const deleteItem = (id: string) => {
-    recalculateTotal(cartList, id)
-    const newList = cartList.filter((item) => item.id !== id);
-    setCartList(newList);
+    recalculateTotal(cardList, id)
+    const newList = cardList.filter((item) => item.id !== id);
+    setCardList(newList);
+  };
+  const editItem = (updatedItem: CardItem) => {
+    for (let i = 0; i < cardList.length; i++) {
+      if (cardList[i].id == updatedItem.id) {
+        setDisplayModal(true)
+      }
+    }
+    const newList = cardList.filter((item) => item.id !== updatedItem.id);
+    setCardList(newList);
   };
 
   return (
@@ -125,46 +129,57 @@ export default function ShoppingCartPage() {
           <Text style={styles.title}>Carrito de Compras</Text>
           <Text style={styles.price}>Total: {total}€</Text>
           <Button
-          onPress={deleteList}
-          title="Eliminar todo"
-          disabled={cartList.length == 0}
-          color={'red'}
-        />
+            onPress={deleteList}
+            title="Eliminar todo"
+            disabled={cardList.length == 0}
+            color={'red'}
+          />
 
         </View>
       </View>
-      {cartList.length === 0 ?
+      {cardList.length === 0 ?
         (
-          <Text style={styles.empty}>Lista de la compra vacia, Intente de nuevo</Text>
+          <Text style={styles.empty}>Lista de la compra vacía</Text>
         ) : (
           <View style={styles.listShopping}>
             <FlatList
               keyExtractor={(item) => item.id}
-              data={cartList}
+              data={cardList}
               renderItem={({ item, index }) => (
                 <View style={styles.list}>
                   <View>
                     <Image style={styles.imagesCategorys} source={item.image} />
-
                     <Pressable onPress={() => isObtain(index)}>
-                      <Text style={styles.shop}>{item.obtained ? 'Obtenido ✅' : 'Pedir '}</Text>
+                      <Text style={styles.shop}>{item.obtained ? 'Obtenido ✅' : 'Añadir'}</Text>
                     </Pressable>
                   </View>
                   <View style={styles.infoProducts}>
-                    <Text>Nombre Producto: {item.name}</Text>
-                    <Text>Cantidad: {item.quantity}</Text>
-                    <Text>Categoria: {item.category}</Text>
-                    <Text>Precio: {item.price}</Text>
-                    <Pressable onPress={() => deleteItem(item.id)}>
-                      <MaterialCommunityIcons style={styles.buttomDelete} name="delete-circle" size={50} color="black" />
-                    </Pressable>
+                    <Text
+                      style={[
+                        styles.infoProductsInfo,
+                        item.obtained && styles.infoProductsNameSelected,
+                      ]}
+                    >
+                      Producto: {item.name}
+                    </Text>
+                    <Text style={styles.infoProductsInfo}>Cantidad: {item.quantity}</Text>
+                    <Text style={styles.infoProductsInfo}>Categoria: {item.category}</Text>
+                    <Text style={styles.infoProductsInfo}>Precio: {item.price}</Text>
+                    <View style={styles.row}>
+                      <Pressable onPress={() => deleteItem(item.id)}>
+                        <MaterialCommunityIcons style={styles.buttomDelete} name="delete-circle" size={50} color="black" />
+                      </Pressable>
+                      <Pressable onPress={() => editItem(item)}>
+                        <MaterialIcons style={styles.buttomEdit} name="edit" size={40} color="black" />
+                      </Pressable>
+                    </View>
                   </View>
                 </View>
               )}
             />
           </View>
         )}
-      <Modal animationType="slide" transparent={true} visible={displayModal}>
+      <Modal animationType="fade" transparent={true} visible={displayModal}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Añadir Nuevo Producto a la Lista</Text>
@@ -172,9 +187,28 @@ export default function ShoppingCartPage() {
             <Text>Nombre:</Text>
             <TextInput
               style={styles.input}
-              value={cartItem.name}
-              onChangeText={(newName) => setCartItem({ ...cartItem, id: uuid.v4(), name: newName })}
+              value={cardItem.name}
+              onChangeText={(newName) => setCardItem({ ...cardItem, id: uuid.v4(), name: newName })}
               placeholder="Papa bonita"
+            />
+
+
+            <Text>Cantidad:</Text>
+            <TextInput
+              style={styles.input}
+              value={cardItem.quantity.toString()}
+              onChangeText={(newQuantity) => setCardItem({ ...cardItem, quantity: parseFloat(newQuantity) })}
+              placeholder="12"
+              keyboardType="numeric"
+            />
+
+            <Text>Precio:</Text>
+            <TextInput
+              style={styles.input}
+              value={cardItem.price.toString()}
+              onChangeText={(newQuantity) => setCardItem({ ...cardItem, price: parseFloat(newQuantity) })}
+              placeholder="5.0"
+              keyboardType="numeric"
             />
 
             <Text>Categoría:</Text>
@@ -183,32 +217,15 @@ export default function ShoppingCartPage() {
               selectedValue={category}
               onValueChange={(selectedCategory) => {
                 setCategory(selectedCategory)
-                setCartItem({ ...cartItem, category: selectedCategory, image: getImageFromCategory(selectedCategory) })
+                setCardItem({ ...cardItem, category: selectedCategory, image: getImageFromCategory(selectedCategory) })
               }
               }>
               {categories.map((item, index) => <Picker.Item label={item} value={item} key={index} />)}
 
             </Picker>
-            <Text>Cantidad:</Text>
-            <TextInput
-              style={styles.input}
-              value={cartItem.quantity.toString()}
-              onChangeText={(newQuantity) => setCartItem({ ...cartItem, quantity: parseFloat(newQuantity) })}
-              placeholder="12"
-              keyboardType="numeric"
-            />
-
-            <Text>Precio:</Text>
-            <TextInput
-              style={styles.input}
-              value={cartItem.price.toString()}
-              onChangeText={(newQuantity) => setCartItem({ ...cartItem, price: parseFloat(newQuantity) })}
-              placeholder="5.0"
-              keyboardType="numeric"
-            />
 
             <View style={styles.buttomsModal}>
-              <Button title="Guardar" onPress={() => sendForm()} disabled={cartItem.name == '' || category == '' || cartItem.quantity <= 0 || isNaN(cartItem.quantity) || isNaN(cartItem.price) || cartItem.price <= 0} />
+              <Button title="Guardar" onPress={() => sendForm()} disabled={cardItem.name == '' || category == '' || cardItem.quantity <= 0 || isNaN(cardItem.quantity) || isNaN(cardItem.price) || cardItem.price <= 0} />
               <Pressable onPress={() => setDisplayModal(false)}>
                 <Text style={styles.buttomClose}>Cerrar</Text>
               </Pressable>
@@ -224,7 +241,7 @@ export default function ShoppingCartPage() {
         <Link style={styles.link} href="/">
           <Foundation name="home" size={24} style={styles.buttomText} />
         </Link>
-        
+
       </View>
     </View >
   );
@@ -246,11 +263,21 @@ const styles = StyleSheet.create({
   },
   bottoms: {
     flexDirection: 'row',
-    alignSelf:'center',
+    alignSelf: 'center',
     marginTop: 20
   },
   infoProducts: {
+    marginTop: 20,
+    width:230
+  },
+  infoProductsInfo: {
+    fontSize: 18
+  },
+  infoProductsName: {
     marginTop: 20
+  },
+  infoProductsNameSelected: {
+    textDecorationLine: 'line-through'
   },
   buttomsModal: {
     flexDirection: 'row',
@@ -270,6 +297,9 @@ const styles = StyleSheet.create({
   buttomDelete: {
     color: 'red',
     marginRight: 10,
+  },
+  buttomEdit: {
+    color: '#ed8b1a',
   },
   modalOverlay: {
     flex: 1,
@@ -313,7 +343,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     height: '70%',
     width: 400,
-    backgroundColor:'#f5f5f5'
+    backgroundColor: '#f5f5f5'
   },
   title: {
     alignSelf: 'center',
@@ -329,8 +359,8 @@ const styles = StyleSheet.create({
   },
   imagesCategorys: {
     alignSelf: 'center',
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
     marginTop: 10,
     marginBottom: 20,
     marginRight: 30
