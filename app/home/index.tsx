@@ -20,7 +20,7 @@ const HomePage = () => {
           <Text style={styles.titleInfo}>Ideas</Text>
           <Text>___________________________</Text>
         </View>
-        <Link style={styles.link} href="/provider/(tabs)">
+        <Link style={styles.link} href="/provider/(drawer)">
           <Text style={styles.buttomText}>Mi info</Text>
         </Link>
         <View style={styles.containerInfo}>
