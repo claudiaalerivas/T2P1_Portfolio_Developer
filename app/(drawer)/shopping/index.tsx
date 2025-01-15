@@ -1,9 +1,9 @@
 import { Dispatch, useState } from 'react'
 import { Button, StyleSheet, Text, View, Modal, TextInput, FlatList, Image, Pressable } from 'react-native'
 import { Link } from 'expo-router'
-import { initialCartItemList } from '../../data/card-item-list'
+import { initialCartItemList } from '../../../data/card-item-list'
 import uuid from 'react-native-uuid';
-import { CartItem as CardItem } from '../../types/CartItem'
+import { CartItem as CardItem } from '../../../types/CartItem'
 import { Picker } from '@react-native-picker/picker';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Foundation from '@expo/vector-icons/Foundation';
@@ -39,13 +39,13 @@ export default function ShoppingCartPage() {
   ];
 
   const images = {
-    bread: require('../../assets/images/pan.png'),
-    canned: require('../../assets/images/canned.png'),
-    drinks: require('../../assets/images/drinks.png'),
-    meat: require('../../assets/images/meat.png'),
-    fish: require('../../assets/images/fished.png'),
-    vegetables: require('../../assets/images/fruitsVegetables.png'),
-    others: require('../../assets/images/others.png')
+    bread: require('../../../assets/images/pan.png'),
+    canned: require('../../../assets/images/canned.png'),
+    drinks: require('../../../assets/images/drinks.png'),
+    meat: require('../../../assets/images/meat.png'),
+    fish: require('../../../assets/images/fished.png'),
+    vegetables: require('../../../assets/images/fruitsVegetables.png'),
+    others: require('../../../assets/images/others.png')
   }
 
   const getImageFromCategory = (selectedCategory: string) => {
@@ -124,7 +124,7 @@ export default function ShoppingCartPage() {
   return (
     <View>
       <View style={styles.row}>
-        <Image style={styles.imagePrincipal} source={require('../../assets/images/shoppingCart.png')} />
+        <Image style={styles.imagePrincipal} source={require('../../../assets/images/shoppingCart.png')} />
         <View>
           <Text style={styles.title}>Carrito de Compras</Text>
           <Text style={styles.price}>Total: {total}€</Text>
@@ -238,9 +238,6 @@ export default function ShoppingCartPage() {
         <Pressable onPress={() => setDisplayModal(true)}>
           <MaterialCommunityIcons style={styles.addCart} name="cart-plus" size={40} />
         </Pressable>
-        <Link style={styles.link} href="/">
-          <Foundation name="home" size={24} style={styles.buttomText} />
-        </Link>
 
       </View>
     </View >
