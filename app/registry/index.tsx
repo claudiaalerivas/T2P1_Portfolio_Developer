@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
 import React, { useState } from 'react'
 
-const index = () => {
+const RegistryUser = () => {
   
   return (
     <View style={styles.container}>
@@ -10,7 +10,7 @@ const index = () => {
   )
 }
 
-export default index
+export default RegistryUser
 
 const styles = StyleSheet.create({
   container: {
