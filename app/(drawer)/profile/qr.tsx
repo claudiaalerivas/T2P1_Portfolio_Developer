@@ -10,9 +10,7 @@ const Qr = () => {
       <Text style={styles.titleInfo}>Visita mi Repositorio</Text>
       <Text style={styles.description}>Para explorar Proyectos y Soluciones en los que he trabajado.</Text>
       <Text style={styles.linesTitle}>___________________________</Text>
-      <Link style={styles.link} href="/">
-        <Text style={styles.buttomText}>Inicio</Text>
-      </Link>
+      
       <View style={styles.qrCode}>
         <QRCode value="https://github.com/adhernea" />
       </View>
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
   },
   containerQrCode: {
     alignItems: 'center',
-    marginTop:-50
+    marginTop:-100
 
   },
   description: {

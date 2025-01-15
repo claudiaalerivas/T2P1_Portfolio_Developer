@@ -1,16 +1,14 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, Pressable } from 'react-native';
+import { Link, Redirect } from 'expo-router';
 import { info } from '../../../data/data';
-import { Link } from 'expo-router';
 
 const LanguagesList = () => {
+
   return (
     <View style={styles.principalContainer}>
       <Text style={styles.linesTitle}>___________________________</Text>
       <Text style={styles.titleInfo}>Herramientas y Tecnologías Clave</Text>
       <Text style={styles.linesTitleBottom}>___________________________</Text>
-      <Link style={styles.link} href="/">
-        <Text style={styles.buttomText}>Inicio</Text>
-      </Link>
       <FlatList
         style={styles.list}
         data={info}
@@ -31,8 +29,8 @@ const LanguagesList = () => {
 export default LanguagesList
 
 const styles = StyleSheet.create({
-  list:{
-    height:200
+  list: {
+    height: 200
   },
   link: {
     backgroundColor: 'purple',
@@ -58,7 +56,7 @@ const styles = StyleSheet.create({
   },
   principalContainer: {
     width: '100%',
-    marginTop: -90
+    marginTop: -100
   },
   images: {
     width: 70,
@@ -74,12 +72,11 @@ const styles = StyleSheet.create({
   },
   linesTitle: {
     alignSelf: 'center',
-    marginTop:5,
     marginBottom: -10
   },
   linesTitleBottom: {
     alignSelf: 'center',
-    marginBottom: -10,
+    marginBottom: 25,
     marginTop: -10
   },
   informationList: {

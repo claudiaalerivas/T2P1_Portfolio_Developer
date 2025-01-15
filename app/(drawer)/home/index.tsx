@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <View style={styles.containerPrincipal}>
       <ScrollView>
-        <Image style={styles.image} source={require('../../assets/images/welcomee.png')} />
+        <Image style={styles.image} source={require('../../../assets/images/welcomee.png')} />
         <View style={styles.title}>
           <Text>___________________________</Text>
           <Text style={styles.titleInfo}>Juntos</Text>
@@ -20,9 +20,6 @@ const HomePage = () => {
           <Text style={styles.titleInfo}>Ideas</Text>
           <Text>___________________________</Text>
         </View>
-        <Link style={styles.link} href="/provider/(drawer)">
-          <Text style={styles.buttomText}>Mi info</Text>
-        </Link>
         <View style={styles.containerInfo}>
           <View style={styles.box}>
             <MaterialCommunityIcons name="certificate-outline" size={24} style={styles.icons} />
@@ -40,10 +37,6 @@ const HomePage = () => {
             <Text style={styles.descriptionBox}>Podrás escalar tu proyecto y añadir más funcionalidades siempre que lo necesites.</Text>
           </View>
         </View>
-        <Text style={styles.titleTestApp}>Lista de la Compra</Text>
-        <Link style={styles.link} href="/shopping">
-          <Text style={styles.buttomText}>Compra ya!</Text>
-        </Link>
         <View style={styles.socialBox}>
           <Ionicons name="logo-github" size={30} style={styles.socialIcons} />
           <Entypo name="instagram" size={30} style={styles.socialIcons} />
