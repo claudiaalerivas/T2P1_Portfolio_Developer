@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { userInfo } from '../../types/RegisterData';
+import Toast from 'react-native-toast-message';
 
 const RegisterPage = () => {
   const emptyForm = {
@@ -13,6 +14,12 @@ const RegisterPage = () => {
   const [form, setForm] = useState<userInfo>(emptyForm);
 
   const sendForm = () => {
+    console.log('pasoooo')
+    Toast.show({
+      type: 'success',
+      text1: 'Muy Bien!',
+      text2: 'Se ha registrado tu usuario exitosamente! 👋'
+    });
     setForm(emptyForm);
   };
 
@@ -20,14 +27,15 @@ const RegisterPage = () => {
     const regex = /^(?=.*[A-Z])(?=.*[*!\-$&?¿.])(?=.*[0-9]).+$/;
     const strMatch = password.match(regex)
     if (strMatch) {
-      return true
-    } else {
       return false
+    } else {
+      return true
     }
   }
 
   return (
     <View style={styles.container}>
+      <Toast />
       <View style={styles.containerInputs}>
         <AntDesign name="adduser"style={styles.title}  size={80} color="purple" />
         <Text style={styles.title}>Registro de Usuario</Text>
@@ -60,7 +68,7 @@ const RegisterPage = () => {
           <Button
             title="Guardar"
             onPress={sendForm}
-            disabled={form.name === '' || form.email === '' || form.password === '' || form.password.length < 8 || containsCharacters(form.password.trim().replace(" ", ""))}
+            disabled={form.name === '' || form.email === '' || form.password === '' || form.password.length < 8 || containsCharacters(form.password)}
           />
         </View>
       </View>
