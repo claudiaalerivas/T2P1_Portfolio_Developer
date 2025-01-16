@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { userInfo } from '../../types/RegisterData';
 
 const RegisterPage = () => {
   const emptyForm = {
@@ -9,12 +10,21 @@ const RegisterPage = () => {
     password: '',
   };
 
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<userInfo>(emptyForm);
 
   const sendForm = () => {
     setForm(emptyForm);
   };
 
+  function containsCharacters(password: string): boolean {
+    const regex = /^(?=.*[A-Z])(?=.*[*!\-$&?¿.])(?=.*[0-9]).+$/;
+    const strMatch = password.match(regex)
+    if (strMatch) {
+      return true
+    } else {
+      return false
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -50,7 +60,7 @@ const RegisterPage = () => {
           <Button
             title="Guardar"
             onPress={sendForm}
-            disabled={form.name === '' || form.email === '' || form.password === '' || form.email.length < 8 || form.email.includes('ABCDEFG')}
+            disabled={form.name === '' || form.email === '' || form.password === '' || form.password.length < 8 || containsCharacters(form.password.trim().replace(" ", ""))}
           />
         </View>
       </View>
