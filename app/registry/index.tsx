@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const RegistryUser = () => {
+const RegisterPage = () => {
   const emptyForm = {
     name: '',
     email: '',
@@ -58,7 +58,7 @@ const RegistryUser = () => {
   );
 };
 
-export default RegistryUser;
+export default RegisterPage;
 
 const styles = StyleSheet.create({
   container: {
