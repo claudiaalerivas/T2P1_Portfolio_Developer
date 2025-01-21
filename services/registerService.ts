@@ -49,7 +49,7 @@ const saveUser = async (key: string, data: loginInfo): Promise<void> => {
     console.log(`AsyncStorage Error: ${e}`);
   }
 };
-async function get<T>(key: string): Promise<T | null> {
+async function getUser<T>(key: string): Promise<T | null> {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
@@ -65,7 +65,7 @@ const OrdersService = {
   KEYS,
   registerUser,
   saveUser,
-  get,
+  getUser,
   registerLogin
 };
 
