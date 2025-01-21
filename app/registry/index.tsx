@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { registerInfo } from '../../types/RegisterData';
 import Toast from 'react-native-toast-message';
-import OrdersService from '../../services/registerService';
+import OrdersService from '../../services/manage-service-user';
 import { Redirect, router } from 'expo-router'
 
 const RegisterPage = () => {
