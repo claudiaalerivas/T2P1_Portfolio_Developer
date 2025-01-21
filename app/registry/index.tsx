@@ -4,20 +4,29 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { userInfo } from '../../types/RegisterData';
 import Toast from 'react-native-toast-message';
 import OrdersService from '../../services/registerService';
+import { Redirect, router } from 'expo-router'
 
 const RegisterPage = () => {
-  const USER_TOKEN_KEY = OrdersService.KEY.userToken;
   const emptyForm = {
     name: '',
     email: '',
     password: '',
   };
-
+  
   const [form, setForm] = useState<userInfo>(emptyForm);
-
-  function insertUser(user:userInfo) {
+  
+  async function insertUser(user:userInfo) {
     try {
-      OrdersService.saveUser(USER_TOKEN_KEY, user)
+      const response = await OrdersService.registerUser(user)
+      if(response !=  201 ){
+        window.alert('Hubo un error al registrar los datos, intente mas tarde')
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Muy Bien!',
+          text2: 'Se ha registrado tu usuario exitosamente! 👋'
+        });
+      }
     } catch (error) {
       console.log(error)
     }
@@ -30,16 +39,14 @@ const RegisterPage = () => {
         text2: 'Verifica el email y que la contraseña sea segura',
       });
     } else {
+      
       insertUser({
         name: form.name,
         email: form.email,
         password: form.password
       });
-      Toast.show({
-        type: 'success',
-        text1: 'Muy Bien!',
-        text2: 'Se ha registrado tu usuario exitosamente! 👋'
-      });
+      router.navigate('./../login')
+
     }
     setForm(emptyForm);
   };

@@ -7,7 +7,7 @@ const API_URL = "http://localhost:8080/api/adri";
 const KEY = {
   userToken: 'user-token'
 }
-const saveUser = async (key: string, data: userInfo): Promise<void> => {
+const registerUser = async (data: userInfo): Promise< number | undefined > => {
   try {
     const response = await fetch(`${API_URL}/saved`, {
       method: "POST",
@@ -17,16 +17,16 @@ const saveUser = async (key: string, data: userInfo): Promise<void> => {
         password: data.password,
       }),
     })
-    await AsyncStorage.setItem(key, JSON.stringify(response.json)); 
+    return response.status
   } catch (e) {
     console.log(`AsyncStorage Error: ${e}`);
   }
 };
 
-const getUser = async (key: string): Promise< string | null | undefined >  => {
+const getUser = async (data: userInfo): Promise< void>  => {
   try {
-    const jsonValue = await AsyncStorage.getItem(key);
-    return jsonValue != null ? JSON.stringify(jsonValue) : null;
+    const jsonValue = JSON.stringify(data);
+    await AsyncStorage.setItem(KEY.userToken, jsonValue);
   } catch (e) {
     console.log(`AsyncStorage Error: ${e}`);
   }
@@ -35,7 +35,7 @@ const getUser = async (key: string): Promise< string | null | undefined >  => {
 
 const OrdersService = {
   KEY,
-  saveUser,
+  registerUser,
   getUser
 };
 
