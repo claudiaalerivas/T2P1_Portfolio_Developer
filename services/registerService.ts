@@ -1,21 +1,42 @@
 import axios from "axios";
 import { userInfo } from '../types/RegisterData';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = "http://localhost:8080/api/adri";
 
-const users = async () => {
-  const response = await axios.get(`${API_URL}/user`);
-  return response.data;
+const KEY = {
+  userToken: 'user-token'
+}
+const saveUser = async (key: string, data: userInfo): Promise<void> => {
+  try {
+    const response = await fetch(`${API_URL}/saved`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      }),
+    })
+    await AsyncStorage.setItem(key, JSON.stringify(response.json)); 
+  } catch (e) {
+    console.log(`AsyncStorage Error: ${e}`);
+  }
+};
+
+const getUser = async (key: string): Promise< string | null | undefined >  => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key);
+    return jsonValue != null ? JSON.stringify(jsonValue) : null;
+  } catch (e) {
+    console.log(`AsyncStorage Error: ${e}`);
+  }
 };
 
 
-const addUser = async (newActor: userInfo) => {
-  const response = await axios.post(`${API_URL}/user`, newActor);
-  return response.data;
-};
 const OrdersService = {
-  users,
-  addUser,
+  KEY,
+  saveUser,
+  getUser
 };
 
 export default OrdersService;

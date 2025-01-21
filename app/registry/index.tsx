@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { userInfo } from '../../types/RegisterData';
 import Toast from 'react-native-toast-message';
+import OrdersService from '../../services/registerService';
 
 const RegisterPage = () => {
+  const USER_TOKEN_KEY = OrdersService.KEY.userToken;
   const emptyForm = {
     name: '',
     email: '',
@@ -13,13 +15,28 @@ const RegisterPage = () => {
 
   const [form, setForm] = useState<userInfo>(emptyForm);
 
+  function insertUser() {
+    try {
+      OrdersService.saveUser(USER_TOKEN_KEY, form)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const sendForm = () => {
-    console.log('pasoooo')
-    Toast.show({
-      type: 'success',
-      text1: 'Muy Bien!',
-      text2: 'Se ha registrado tu usuario exitosamente! 👋'
-    });
+    if (form.name === '' || form.email === '' || !form.email.includes('@') || !form.email.includes('.') || form.password === '' || form.password.length < 8 || containsCharacters(form.password)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Ups! Algún campo esta vacío o...',
+        text2: 'Verifica el email y que la contraseña sea segura',
+      });
+    } else {
+      insertUser();
+      Toast.show({
+        type: 'success',
+        text1: 'Muy Bien!',
+        text2: 'Se ha registrado tu usuario exitosamente! 👋'
+      });
+    }
     setForm(emptyForm);
   };
 
@@ -37,7 +54,7 @@ const RegisterPage = () => {
     <View style={styles.container}>
       <Toast />
       <View style={styles.containerInputs}>
-        <AntDesign name="adduser"style={styles.title}  size={80} color="purple" />
+        <AntDesign name="adduser" style={styles.title} size={80} color="purple" />
         <Text style={styles.title}>Registro de Usuario</Text>
         <Text>Nombre:</Text>
         <TextInput
@@ -68,7 +85,6 @@ const RegisterPage = () => {
           <Button
             title="Guardar"
             onPress={sendForm}
-            disabled={form.name === '' || form.email === '' || form.password === '' || form.password.length < 8 || containsCharacters(form.password)}
           />
         </View>
       </View>

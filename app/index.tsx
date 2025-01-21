@@ -3,7 +3,7 @@ import { Redirect } from 'expo-router'
 
 const AppPage = () => {
   return (
-    <Redirect href={"/(drawer)/home"}></Redirect>
+    <Redirect href={"/registry"}></Redirect>
   )
 }
 
