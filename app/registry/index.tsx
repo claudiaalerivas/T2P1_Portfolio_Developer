@@ -15,9 +15,9 @@ const RegisterPage = () => {
 
   const [form, setForm] = useState<userInfo>(emptyForm);
 
-  function insertUser() {
+  function insertUser(user:userInfo) {
     try {
-      OrdersService.saveUser(USER_TOKEN_KEY, form)
+      OrdersService.saveUser(USER_TOKEN_KEY, user)
     } catch (error) {
       console.log(error)
     }
@@ -30,7 +30,11 @@ const RegisterPage = () => {
         text2: 'Verifica el email y que la contraseña sea segura',
       });
     } else {
-      insertUser();
+      insertUser({
+        name: form.name,
+        email: form.email,
+        password: form.password
+      });
       Toast.show({
         type: 'success',
         text1: 'Muy Bien!',
