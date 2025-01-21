@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = "http://localhost:8080/api/adri";
 
-const KEY = {
+const KEYS = {
   userToken: 'user-token'
 }
 const registerUser = async (data: userInfo): Promise< number | undefined > => {
@@ -23,10 +23,10 @@ const registerUser = async (data: userInfo): Promise< number | undefined > => {
   }
 };
 
-const getUser = async (data: userInfo): Promise< void>  => {
+const getUser = async (key: string, data: userInfo): Promise< void>  => {
   try {
     const jsonValue = JSON.stringify(data);
-    await AsyncStorage.setItem(KEY.userToken, jsonValue);
+    await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
     console.log(`AsyncStorage Error: ${e}`);
   }
@@ -34,7 +34,7 @@ const getUser = async (data: userInfo): Promise< void>  => {
 
 
 const OrdersService = {
-  KEY,
+  KEYS,
   registerUser,
   getUser
 };
