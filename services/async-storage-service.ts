@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginInfo, registerInfo } from '../types/RegisterData';
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const saveUser = async (key: string, data: loginInfo): Promise<void> => {
     try {

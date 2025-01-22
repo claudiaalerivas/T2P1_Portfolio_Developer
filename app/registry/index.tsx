@@ -19,20 +19,21 @@ const RegisterPage = () => {
     try {
       const response = await userService.registerUser(user)
       if (response != 201) {
-        window.alert('Hubo un error al registrar los datos, intente mas tarde')
+        window.alert('Hubo un error al registrar los datos, puede que el email ya estixta, o intente más tarde')
       } else {
         Toast.show({
           type: 'success',
           text1: 'Muy Bien!',
           text2: 'Se ha registrado tu usuario exitosamente! 👋'
         });
+        router.navigate('./../login')
       }
     } catch (error) {
       console.log(error)
     }
   }
   const sendForm = () => {
-    if (form.name === '' || form.email === '' || !form.email.includes('@') || !form.email.includes('.') || form.password === '' || form.password.length < 8 || containsCharacters(form.password)) {
+    if (form.name === '' || form.email === '' || !form.email.includes('@') || !form.email.endsWith('.com') || form.password === '' || form.password.length < 8 || !containsCharacters(form.password)) {
       Toast.show({
         type: 'error',
         text1: 'Ups! Algún campo esta vacío o...',
@@ -45,8 +46,6 @@ const RegisterPage = () => {
         email: form.email,
         password: form.password
       });
-      router.navigate('./../login')
-
     }
     setForm(emptyForm);
   };
@@ -55,9 +54,9 @@ const RegisterPage = () => {
     const regex = /^(?=.*[A-Z])(?=.*[*!\-$&?¿.])(?=.*[0-9]).+$/;
     const strMatch = password.match(regex)
     if (strMatch) {
-      return false
-    } else {
       return true
+    } else {
+      return false
     }
   }
 
