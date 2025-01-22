@@ -1,9 +1,29 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { Redirect } from 'expo-router'
+import { useEffect } from 'react';
+import { router } from "expo-router";
+import asyncStorageService from '../services/async-storage-service';
+import LottieView from 'lottie-react-native';
+
 
 const AppPage = () => {
+  let isUserTokenSaved = false;
+  const isTokenValid = true;
+  const getSavedUserToken = async () => {
+    const token = await asyncStorageService.getUser(asyncStorageService.KEYS.userToken);
+    if (token != null && isTokenValid) {
+      isUserTokenSaved = true;
+      router.navigate("/(drawer)/home");
+    } else {
+      router.navigate("./login");
+    }
+  };
+
+  useEffect(() => {
+    getSavedUserToken();
+  }, []);
   return (
-    <Redirect href={"/registry"}></Redirect>
+    <LottieView style={{flex: 1}} source={require('./../assets/loader.json')} autoPlay loop />
   )
 }
 
