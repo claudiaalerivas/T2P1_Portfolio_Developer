@@ -2,9 +2,6 @@ import { loginInfo, registerInfo } from '../types/RegisterData';
 
 const API_URL = "http://192.168.0.123:5000/auth";
 
-const KEYS = {
-  userToken: 'user-token'
-}
 const registerUser = async (data: registerInfo): Promise< number | undefined > => {
   try {
     const response = await fetch(`${API_URL}/register`, {
@@ -43,11 +40,7 @@ const registerLogin = async (data: loginInfo): Promise< number| undefined > => {
   }
 };
 
-
-
-
 const userService = {
-  KEYS,
   registerUser,
   registerLogin
 };

@@ -21,7 +21,7 @@ const LoginPage = () => {
       if (response != 201) {
         window.alert('Hubo un error al iniciar secion, puede que el email o la contraseña sean incorrectos, intente de nuevo')
       } else {
-        await asyncStorageService.saveUser(userService.KEYS.userToken, user)
+        await asyncStorageService.saveUser(asyncStorageService.KEYS.userToken, user)
         router.navigate('../(drawer)/home')
       }
     } catch (error) {
