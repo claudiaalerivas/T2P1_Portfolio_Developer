@@ -21,11 +21,6 @@ const RegisterPage = () => {
       if (response != 201) {
         window.alert('Hubo un error al registrar los datos, puede que el email ya estixta, o intente más tarde')
       } else {
-        Toast.show({
-          type: 'success',
-          text1: 'Muy Bien!',
-          text2: 'Se ha registrado tu usuario exitosamente! 👋'
-        });
         router.navigate('./../login')
       }
     } catch (error) {
