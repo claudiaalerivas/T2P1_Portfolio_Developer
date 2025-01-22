@@ -18,15 +18,11 @@ const LoginPage = () => {
   async function sevedUser(user: loginInfo) {
     try {
       const response = await userService.registerLogin(user)
-      if (response == null) {
-        window.alert('Hubo un error al registrar los datos, intente mas tarde')
+      if (response != 201) {
+        window.alert('Hubo un error al iniciar secion, puede que el email o la contraseña sean incorrectos, intente de nuevo')
       } else {
         await asyncStorageService.saveUser(userService.KEYS.userToken, user)
-        Toast.show({
-          type: 'success',
-          text1: 'Muy Bien!',
-          text2: 'Se ha registrado tu usuario exitosamente! 👋'
-        });
+        router.navigate('../(drawer)/home')
       }
     } catch (error) {
       console.log(error)
@@ -49,7 +45,6 @@ const LoginPage = () => {
         text2: 'Verifica el email y que la contraseña sea segura',
       });
     } else {
-      router.navigate('../(drawer)/home')
       sevedUser(
         {
           email: formLogin.email,

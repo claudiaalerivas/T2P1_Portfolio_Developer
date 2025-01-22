@@ -6,7 +6,7 @@ const API_URL = "http://172.16.101.71:5000/auth";
 const KEYS = {
   userToken: 'user-token'
 }
-const registerUser = async (data: registerInfo): Promise<number | undefined> => {
+const registerUser = async (data: registerInfo): Promise< number | undefined > => {
   try {
     const response = await fetch(`${API_URL}/register`, {
       method: "POST",
@@ -26,7 +26,7 @@ const registerUser = async (data: registerInfo): Promise<number | undefined> => 
     console.log(`Fetch Error: ${e}`);
   }
 };
-const registerLogin = async (data: loginInfo): Promise<string | null | undefined> => {
+const registerLogin = async (data: loginInfo): Promise< number| undefined > => {
   try {
     const response = await fetch(`${API_URL}/login`, {
       method: "POST",
@@ -38,11 +38,7 @@ const registerLogin = async (data: loginInfo): Promise<string | null | undefined
         pswd: data.password,
       }),
     })
-    if (response.status == 201) {
-      return response.json.toString()
-    } else {
-      return null
-    }
+    return response.status
   } catch (e) {
     console.log(`Fetch Error: ${e}`);
   }
