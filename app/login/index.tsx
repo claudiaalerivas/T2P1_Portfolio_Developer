@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
-import OrdersService from '../../services/manage-service-user';
 import { loginInfo } from '../../types/RegisterData';
+import asyncStorageService from '../../services/async-storage-service';
+import userService from '../../services/user-service';
 
 const LoginPage = () => {
 
@@ -16,11 +17,11 @@ const LoginPage = () => {
   const [formLogin, setFormLogin] = useState(emptyForm);
   async function sevedUser(user: loginInfo) {
     try {
-      const response = await OrdersService.registerLogin(user)
+      const response = await userService.registerLogin(user)
       if (response == null) {
         window.alert('Hubo un error al registrar los datos, intente mas tarde')
       } else {
-        await OrdersService.saveUser(OrdersService.KEYS.userToken, user)
+        await asyncStorageService.saveUser(userService.KEYS.userToken, user)
         Toast.show({
           type: 'success',
           text1: 'Muy Bien!',

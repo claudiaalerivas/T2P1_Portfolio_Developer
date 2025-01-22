@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { registerInfo } from '../../types/RegisterData';
 import Toast from 'react-native-toast-message';
-import OrdersService from '../../services/manage-service-user';
 import { Redirect, router } from 'expo-router'
+import userService from '../../services/user-service';
 
 const RegisterPage = () => {
   const emptyForm = {
@@ -17,7 +17,7 @@ const RegisterPage = () => {
 
   async function insertUser(user: registerInfo) {
     try {
-      const response = await OrdersService.registerUser(user)
+      const response = await userService.registerUser(user)
       if (response != 201) {
         window.alert('Hubo un error al registrar los datos, intente mas tarde')
       } else {
