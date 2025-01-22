@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import React, { useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { loginInfo } from '../../types/RegisterData';
 import asyncStorageService from '../../services/async-storage-service';
 import userService from '../../services/user-service';
@@ -84,6 +84,7 @@ const LoginPage = () => {
             onPress={sendForm}
             disabled={formLogin.email === '' || formLogin.password === ''}
           />
+          <Link style={styles.redirectButtom} href={"./../registry"}>No tengo Cuenta</Link>
         </View>
       </View>
     </View>
@@ -98,6 +99,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  redirectButtom:{
+    color:'purple',
+    alignSelf:'center',
+    fontSize: 20,
+    marginTop: 20
   },
   containerInputs: {
     borderTopWidth: 5,
