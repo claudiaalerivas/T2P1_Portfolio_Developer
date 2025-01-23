@@ -8,10 +8,9 @@ import LottieView from 'lottie-react-native';
 
 const AppPage = () => {
   let isUserTokenSaved = false;
-  const isTokenValid = true;
   const getSavedUserToken = async () => {
     const token = await asyncStorageService.getUser(asyncStorageService.KEYS.userToken);
-    if (token != null && isTokenValid) {
+    if (token != null) {
       isUserTokenSaved = true;
       router.navigate("/(drawer)/home");
     } else {
