@@ -35,7 +35,8 @@ const deleteTokenUser = async  (key: string): Promise<any | null> => {
 const asyncStorageService = {
   KEYS,
   saveUser,
-  getUser
+  getUser,
+  deleteTokenUser
 };
 
 export default asyncStorageService;
