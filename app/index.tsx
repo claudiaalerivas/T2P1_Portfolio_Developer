@@ -14,6 +14,7 @@ const AppPage = () => {
       isUserTokenSaved = true;
       router.navigate("/(drawer)/home");
     } else {
+      await asyncStorageService.deleteTokenUser(asyncStorageService.KEYS.userToken)
       router.navigate("./login");
     }
   };

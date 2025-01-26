@@ -25,10 +25,12 @@ const getUser = async  (key: string): Promise<any | null> => {
 }
 const deleteTokenUser = async  (key: string): Promise<any | null> => {
   try {
-    await AsyncStorage.removeItem('token', (err) => console.log('finished', err));
+    const v = await AsyncStorage.removeItem(key);
+    console.log(v)
   } catch (e) {
     console.log(`AsyncStorage Error: ${e}`);
   }
+  return null
 }
 
 
