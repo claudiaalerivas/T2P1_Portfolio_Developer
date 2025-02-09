@@ -1,6 +1,6 @@
 import { loginInfo, registerInfo } from '../types/RegisterData';
 
-const API_URL = "http://192.168.0.156:5000/auth";
+const API_URL = "http://192.168.0.123:5000/auth";
 
 const registerUser = async (data: registerInfo): Promise< number | undefined > => {
   try {
@@ -33,7 +33,7 @@ const registerLogin = async (data: loginInfo): Promise< number| undefined > => {
         pswd: data.password,
       }),
     })
-    console.log( response.status)
+    console.log( response.json)
     return response.status
   } catch (e) {
     console.log(`Fetch Error: ${e}`);

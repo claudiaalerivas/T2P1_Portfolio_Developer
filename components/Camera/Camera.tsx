@@ -4,13 +4,15 @@ import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { router } from "expo-router";
+import imageService from "../../services/image-service";
 
 const Camera = () => {
   const cameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState(false);
   const [facing, setFacing] = useState<'front' | 'back'>('back');
-  const navigation = useNavigation(); // Hook de navegación
+  const navigation = useNavigation();
 
   const toggleFacing = () => setFacing(facing === 'back' ? 'front' : 'back');
   const toggleFlash = () => setFlash(!flash);
@@ -18,8 +20,9 @@ const Camera = () => {
   const takePicture = async () => {
     const picture = await cameraRef.current?.takePictureAsync({ base64: true });
     if (picture && picture.base64) {
+      await imageService.saveImageToApi(picture.base64);
       console.log('Foto tomada', picture.base64);
-      navigation.goBack();
+      router.navigate('./../../app/(drawer)/pictures');
     } else {
       alert('Error al tomar la foto.');
     }
@@ -33,7 +36,7 @@ const Camera = () => {
 
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, width: '100%', height: '100%' }}>
       <CameraView
         style={{ flex: 1 }}
         enableTorch={flash}
@@ -52,7 +55,7 @@ const Camera = () => {
         </Pressable>
       </CameraView>
 
-      <Pressable onPress={() => navigation.goBack()}>
+      <Pressable onPress={() => router.navigate('./../../app/(drawer)/pictures')}>
         <Ionicons name="close-circle" size={40} color="black" />
       </Pressable>
     </View>

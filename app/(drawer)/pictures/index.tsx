@@ -13,6 +13,7 @@ import imageService from '../../../services/image-service';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import Camera from "../../../components/Camera/Camera";
+import { Link } from "expo-router";
 
 const PicturesPage = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -55,9 +56,8 @@ const PicturesPage = () => {
 
   return (
     <View style={styles.container}>
-      {images.length === 0 ? (
-        <Text style={styles.title}> No tienes imágenes guardadas</Text>
-      ) : (
+      <Text style={styles.title}>Galería de Fotos</Text>
+      {images.length > 0 ? (
         <FlatList
           data={images}
           keyExtractor={(item, index) => index.toString()}
@@ -71,12 +71,14 @@ const PicturesPage = () => {
             </Pressable>
           )}
         />
+      ) : (
+        <Text style={styles.imagesEmpty}> No tienes imágenes guardadas</Text>
       )}
 
 
-      <Pressable onPress={() => Camera}>
+      <Link href="./../../../components/Camera">
         <Entypo name="camera" size={30} color="black" />
-      </Pressable>
+      </Link>
 
 
 
@@ -132,7 +134,14 @@ const styles = StyleSheet.create({
   },
   title: {
     alignSelf: 'center',
+    fontSize: 25,
+    color: 'black',
+    marginBottom: 20
+  },
+  imagesEmpty: {
+    alignSelf: 'center',
     fontSize: 15,
+    marginBottom: 20,
     color: 'purple'
   },
   modalContainer: {
