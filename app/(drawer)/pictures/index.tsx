@@ -11,6 +11,8 @@ import {
 import React, { useEffect, useState } from 'react'
 import imageService from '../../../services/image-service';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Entypo from '@expo/vector-icons/Entypo';
+import Camera from "../../../components/Camera/Camera";
 
 const PicturesPage = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -71,6 +73,10 @@ const PicturesPage = () => {
         />
       )}
 
+
+      <Pressable onPress={() => Camera}>
+        <Entypo name="camera" size={30} color="black" />
+      </Pressable>
 
 
 
