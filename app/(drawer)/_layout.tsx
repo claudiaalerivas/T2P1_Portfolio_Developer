@@ -9,6 +9,8 @@ import HomePage from './home';
 import Foundation from '@expo/vector-icons/Foundation';
 import LanguagesList from './profile/languages';
 import Log_Out from '../../components/LogOut/Log_Out';
+import Camera from '../../components/Camera/Camera';
+import pictures from './pictures';
 
 const Drawer = createDrawerNavigator();
 
@@ -48,6 +50,14 @@ const _layout = () => {
         options={{
           headerShown: false,
           drawerIcon: () => <Entypo name="shopping-cart" size={24} color="purple" />,
+        }}
+      />
+      <Drawer.Screen
+        name="Camara"
+        component={pictures}
+        options={{
+          headerShown: false,
+          drawerIcon: () => <Entypo name="camera" size={24} color="purple" />,
         }}
       />
       <Drawer.Screen
