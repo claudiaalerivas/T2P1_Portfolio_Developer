@@ -25,7 +25,12 @@ const saveImageToApi = async (base64Image: string): Promise<void> => {
       headers: {
         "Content-Type": "application/json",
         "Authorization": "user-token"
-      }
+      },
+      body: JSON.stringify({
+        height: height,        
+        width: width,          
+        encodedData: base64Image, 
+      })
     });
     const result = await response.json();
     console.log("Imagen subida con éxito:", result);
