@@ -4,7 +4,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Toast from 'react-native-toast-message';
 import { Link, router } from 'expo-router';
 import { loginInfo } from '../../types/RegisterData';
-import asyncStorageService from '../../services/async-storage-service';
 import userService from '../../services/user-service';
 
 const LoginPage = () => {
@@ -18,10 +17,9 @@ const LoginPage = () => {
   async function sevedUser(user: loginInfo) {
     try {
       const response = await userService.registerLogin(user)
-      if (response != 201) {
+      if ( response != 201 ) {
         window.alert('Hubo un error al iniciar secion, puede que el email o la contraseña sean incorrectos, intente de nuevo')
-      } else {
-        await asyncStorageService.saveUser(asyncStorageService.KEYS.userToken, user)
+      } else {     
         router.navigate('../(drawer)/home')
       }
     } catch (error) {
