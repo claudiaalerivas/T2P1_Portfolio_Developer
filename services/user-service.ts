@@ -1,6 +1,8 @@
+import axios from 'axios';
 import { loginInfo, registerInfo } from '../types/RegisterData';
+import asyncStorageService from './async-storage-service';
 
-const API_URL = "http://192.168.0.123:5000/auth";
+const API_URL = "http://172.20.10.3:5000/auth";
 
 const registerUser = async (data: registerInfo): Promise< number | undefined > => {
   try {
@@ -21,20 +23,18 @@ const registerUser = async (data: registerInfo): Promise< number | undefined > =
     console.log(`Fetch Error: ${e}`);
   }
 };
-const registerLogin = async (data: loginInfo): Promise< number| undefined > => {
+const registerLogin = async (data: loginInfo) => {
   try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers:{
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        email: data.email,
-        pswd: data.password,
-      }),
+    const response = await axios.post(`${API_URL}/login`, {
+      email : data.email,
+      pswd : data.password
     })
-    console.log( response.json)
-    return response.status
+    if(response.status == 201) {
+      await asyncStorageService.saveUser(asyncStorageService.KEYS.userToken, response.data.object.token)
+      return response.status
+    } else {
+      return null
+    }
   } catch (e) {
     console.log(`Fetch Error: ${e}`);
   }

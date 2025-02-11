@@ -1,18 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginInfo, registerInfo } from '../types/RegisterData';
 
 const KEYS = {
   userToken: 'user-token'
 }
-
-const saveUser = async (key: string, data: loginInfo): Promise<void> => {
+async function saveUser<T>(key: string, value: T): Promise<void | null | undefined> {
   try {
-    const jsonValue = JSON.stringify(data);
+    const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
     console.log(`AsyncStorage Error: ${e}`);
   }
-};
+}
 const getUser = async  (key: string): Promise<any | null> => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
